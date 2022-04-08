@@ -1,0 +1,11 @@
+node_modules/
+word-game
+words.txt
+yarn.lock
+build/
+build/static/js/*.chunk.js
+build/static/js/*.txt
+build/static/js/*.map
+*.tar.xz
+*.tar.gz
+dict/
