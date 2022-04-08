@@ -1,8 +1,8 @@
-import { ReactChild, ReactChildren } from 'react';
+import { ReactNode } from 'react';
 import { ModalContainer } from './styled';
 
 type PropsT = {
-    children: ReactChild | ReactChild[] | ReactChildren;
+    children: ReactNode;
     title?: string;
     onClose?: () => void;
 };
