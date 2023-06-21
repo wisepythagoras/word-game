@@ -32,6 +32,21 @@ func getPuzzle(c *gin.Context) {
 	})
 }
 
+func getNewPuzzle(c *gin.Context) {
+	date := getDate()
+	puzzle := Puzzle{
+		Words: words,
+		Seed:  date.UnixMilli(),
+		WN:    wn,
+	}
+	words := puzzle.GenerateNew()
+
+	c.JSON(200, gin.H{
+		"board": puzzle.board,
+		"words": words,
+	})
+}
+
 func checkWords(c *gin.Context) {
 	word1 := puzzleCache.Word1
 	word2 := puzzleCache.Word2
@@ -86,7 +101,7 @@ func main() {
 		router.Use(static.Serve("/", static.LocalFile("./build", true)))
 	}
 
-	router.GET("/get-puzzle", getPuzzle)
+	router.GET("/get-puzzle", getNewPuzzle)
 	router.POST("/check", checkWords)
 
 	err := readJSONFile("./words_dictionary.json", &words)
