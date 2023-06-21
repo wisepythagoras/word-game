@@ -9,48 +9,48 @@ import tz from 'dayjs/plugin/timezone';
  * @returns The list of all possible indecies.
  */
 export const getPossibleIndecies = (lastIndex: number): number[] => {
-    const row = Math.floor(lastIndex / 3);
-    const column = lastIndex % 3;
+    const row = Math.floor(lastIndex / 4);
+    const column = lastIndex % 4;
     const possibleIndecies = [];
 
     // Down.
-    if (row === 0 || row === 1) {
-        possibleIndecies.push(lastIndex + 3);
+    if (row === 0 || row === 1 || row === 2) {
+        possibleIndecies.push(lastIndex + 4);
     }
 
     // Up.
-    if (row === 1 || row === 2) {
-        possibleIndecies.push(lastIndex - 3);
+    if (row === 1 || row === 2 || row === 3) {
+        possibleIndecies.push(lastIndex - 4);
     }
 
     // Right.
-    if (column === 0 || column === 1) {
+    if (column === 0 || column === 1 || column === 2) {
         possibleIndecies.push(lastIndex + 1);
     }
 
     // Left.
-    if (column === 1 || column === 2) {
+    if (column === 1 || column === 2 || column === 3) {
         possibleIndecies.push(lastIndex - 1);
     }
 
     // Down and right.
-    if ((column === 0 || column === 1) && (row === 0 || row === 1)) {
-        possibleIndecies.push(lastIndex + 4);
+    if ((column === 0 || column === 1 || column === 2) && (row === 0 || row === 1 || row === 2)) {
+        possibleIndecies.push(lastIndex + 5);
     }
 
     // Down and left.
-    if ((column === 1 || column === 2) && (row === 0 || row === 1)) {
-        possibleIndecies.push(lastIndex + 2);
+    if ((column === 1 || column === 2 || column === 3) && (row === 0 || row === 1 || row === 2)) {
+        possibleIndecies.push(lastIndex + 3);
     }
 
     // Up and left.
-    if ((column === 1 || column === 2) && (row === 1 || row === 2)) {
-        possibleIndecies.push(lastIndex - 4);
+    if ((column === 1 || column === 2 || column === 3) && (row === 1 || row === 2 || row === 3)) {
+        possibleIndecies.push(lastIndex - 5);
     }
 
     // Up and right.
-    if ((column === 0 || column === 1) && (row === 1 || row === 2)) {
-        possibleIndecies.push(lastIndex - 2);
+    if ((column === 0 || column === 1 || column === 2) && (row === 1 || row === 2 || row === 3)) {
+        possibleIndecies.push(lastIndex - 3);
     }
 
     return possibleIndecies;

@@ -45,43 +45,51 @@ func getAllowedHosts() ([]string, error) {
 }
 
 func getPossibleSteps(lastIndex int) []int {
-	row := lastIndex / 3
-	column := lastIndex % 3
+	row := lastIndex / 4
+	column := lastIndex % 4
 	possibleSteps := []int{}
 
+	// TODO: I changed the above to account for 4 rows and 4 columns. Change the
+	// below to account for that as well.
+
+    // Down
+    if (row == 0 || row == 1 || row == 2) {
+		possibleSteps = append(possibleSteps, lastIndex+4)
+    }
+
 	// Up.
-	if row == 1 || row == 2 {
-		possibleSteps = append(possibleSteps, lastIndex-3)
+	if row == 1 || row == 2 || row == 3 {
+		possibleSteps = append(possibleSteps, lastIndex-4)
 	}
 
 	// Right.
-	if column == 0 || column == 1 {
+	if column == 0 || column == 1 || column == 2 {
 		possibleSteps = append(possibleSteps, lastIndex+1)
 	}
 
 	// Left.
-	if column == 1 || column == 2 {
+	if column == 1 || column == 2 || column == 3 {
 		possibleSteps = append(possibleSteps, lastIndex-1)
 	}
 
 	// Down and right.
-	if (column == 0 || column == 1) && (row == 0 || row == 1) {
-		possibleSteps = append(possibleSteps, lastIndex+4)
+	if (column == 0 || column == 1 || column == 2) && (row == 0 || row == 1 || row == 2) {
+		possibleSteps = append(possibleSteps, lastIndex+5)
 	}
 
 	// Down and left.
-	if (column == 1 || column == 2) && (row == 0 || row == 1) {
-		possibleSteps = append(possibleSteps, lastIndex+2)
+	if (column == 1 || column == 2 || column == 3) && (row == 0 || row == 1 || row == 2) {
+		possibleSteps = append(possibleSteps, lastIndex+3)
 	}
 
 	// Up and left.
-	if (column == 1 || column == 2) && (row == 1 || row == 2) {
-		possibleSteps = append(possibleSteps, lastIndex-4)
+	if (column == 1 || column == 2 || column == 3) && (row == 1 || row == 2 || row == 3) {
+		possibleSteps = append(possibleSteps, lastIndex-5)
 	}
 
 	// Up and right.
-	if (column == 0 || column == 1) && (row == 1 || row == 2) {
-		possibleSteps = append(possibleSteps, lastIndex-2)
+	if (column == 0 || column == 1 || column == 2) && (row == 1 || row == 2 || row == 3) {
+		possibleSteps = append(possibleSteps, lastIndex-3)
 	}
 
 	return possibleSteps

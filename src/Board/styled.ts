@@ -86,21 +86,21 @@ export const BoardContainer = styled.div`
 
     & > .board {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr;
-        grid-template-rows: 33.3% 33.3% 33.3%;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr;
+        grid-template-rows: 25% 25% 25% 25%;
         margin-bottom: 40px;
-        column-gap: 20px;
-        grid-gap: 20px;
-        max-width: 340px;
+        column-gap: 10px;
+        grid-gap: 10px;
+        max-width: 400px;
         animation: zoom-in 0.45s cubic-bezier(0.200, 0.480, 0.480, 0.980) both;
 
         & > .cell {
             border-radius: 4px;
             width: 20%;
             height: 20%;
-            min-width: 100px;
-            min-height: 100px;
+            min-width: 80px;
+            min-height: 80px;
             color: #fff;
             text-transform: uppercase;
             font-size: 3em;

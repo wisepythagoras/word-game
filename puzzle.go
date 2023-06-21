@@ -5,39 +5,48 @@ import (
 	"math/rand"
 
 	"github.com/fluhus/gostuff/nlp/wordnet"
+	"github.com/samber/lo"
 )
 
 type Puzzle struct {
-	Words []string
-	Seed  int64
-	board []string
-	WN    *wordnet.WordNet
-	Word1 *Word
-	Word2 *Word
+	Words      []string
+	Seed       int64
+	board      []string
+	WN         *wordnet.WordNet
+	Word1      *Word
+	Word2      *Word
+	BoardWords []*Word
 }
 
-func (p *Puzzle) getEmptyIndexes(letters ...string) []int {
+func (p *Puzzle) getEmptyIndexes(letters ...string) ([]int, []bool) {
 	indexes := make([]int, 0)
+	isExisting := make([]bool, 0)
+	fmt.Println(letters, p.board)
 
 	for i, l := range p.board {
-		if l == "" || (len(letters) > 0 && l == letters[0]) {
+		if l == "" {
 			indexes = append(indexes, i)
+			isExisting = append(isExisting, false)
+		} else if len(letters) > 0 && l == letters[0] {
+			indexes = append(indexes, i)
+			isExisting = append(isExisting, true)
 		}
 	}
 
-	return indexes
+	return indexes, isExisting
 }
 
 func (p *Puzzle) placeWord(word string, lastPos int, positions []int) bool {
 	if len(word) == 0 {
 		return true
 	}
+	fmt.Println(word, p.board)
 
 	if lastPos < 0 {
 		pos := -1
-		posibleIdxs := p.getEmptyIndexes(word[:1])
+		possibleIdxs, isExisting := p.getEmptyIndexes(word[:1])
 
-		for tempPos := -1; len(posibleIdxs) > 0; tempPos = posibleIdxs[rand.Intn(len(posibleIdxs))] {
+		for tempPos := -1; len(possibleIdxs) > 0; tempPos = possibleIdxs[rand.Intn(len(possibleIdxs))] {
 			if tempPos < 0 {
 				continue
 			}
@@ -54,12 +63,19 @@ func (p *Puzzle) placeWord(word string, lastPos int, positions []int) bool {
 
 		p.board[pos] = string(word[0])
 
+		// TODO: This might be reversing an index that another word depends on.
 		if !p.placeWord(word[1:], pos, append(positions, pos)) {
-			p.board[pos] = ""
+			if !isExisting[0] {
+				p.board[pos] = ""
+			}
+
 			return false
 		}
+		
+		fmt.Println(word, "Initial pos:", pos)
 	} else {
 		possibleSteps := getPossibleSteps(lastPos)
+		fmt.Println("Possible steps:", possibleSteps)
 
 		for i := 0; i < len(possibleSteps); i++ {
 			step := possibleSteps[i]
@@ -113,10 +129,46 @@ func (p *Puzzle) pickWord() *Word {
 	return word
 }
 
+func (p *Puzzle) GenerateNew() []*Word {
+	rand.Seed(p.Seed)
+	
+	p.board = make([]string, 16)
+	words := make([]*Word, 0)
+	wordsLen := 0
+	
+	for ; wordsLen < 30; {
+		word := p.pickWord()
+		_, idx, _ := lo.FindIndexOf(words, func(w *Word) bool {
+			return w.Word == word.Word
+		})
+
+		if idx >= 0 {
+			continue
+		}
+
+		if !p.placeWord(word.Word, -1, []int{}) {
+			continue
+		}
+
+		words = append(words, word)
+		wordsLen++
+	}
+
+	for i := 0; i < 16; i++ {
+		if p.board[i] == "" {
+			l := rand.Intn(26) + 97
+			p.board[i] = string(l)
+		}
+	}
+
+	p.BoardWords = words
+	return words
+}
+
 func (p *Puzzle) Generate() {
 	rand.Seed(p.Seed)
 
-	p.board = make([]string, 9)
+	p.board = make([]string, 16)
 
 	p.Word1 = p.pickWord()
 	p.Word2 = p.pickWord()
@@ -129,8 +181,8 @@ func (p *Puzzle) Generate() {
 	tries := 0
 
 	for !p.placeWord(p.Word2.Word, -1, []int{}) {
-		if tries < 9 {
-			p.board = make([]string, 9)
+		if tries < 16 {
+			p.board = make([]string, 16)
 			p.placeWord(p.Word1.Word, -1, []int{})
 			tries++
 		} else {
@@ -143,7 +195,7 @@ func (p *Puzzle) Generate() {
 		}
 	}
 
-	for i := 0; i < 9; i++ {
+	for i := 0; i < 16; i++ {
 		if p.board[i] == "" {
 			l := rand.Intn(26) + 97
 			p.board[i] = string(l)
